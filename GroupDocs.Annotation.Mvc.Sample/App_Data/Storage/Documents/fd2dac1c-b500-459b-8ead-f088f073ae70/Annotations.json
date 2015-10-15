@@ -1,0 +1,146 @@
+{
+  "4f17992c-c071-4cb2-ab59-51a727263af4": {
+    "1": {
+      "Version": 1,
+      "Id": "4f17992c-c071-4cb2-ab59-51a727263af4",
+      "Position": {
+        "X": 2.0,
+        "Y": 2.0
+      },
+      "Width": 2.0,
+      "Height": 2.0,
+      "Type": 0,
+      "Access": null,
+      "TextPosition": null,
+      "TextLength": null,
+      "SvgPath": null,
+      "FieldText": null,
+      "FontFamily": null,
+      "FontSize": null,
+      "FontColor": null,
+      "PageNumber": 0,
+      "PenColor": null,
+      "PenWidth": null,
+      "PenStyle": null,
+      "BackgroundColor": null,
+      "Row": null,
+      "Column": null,
+      "AnnotationReplies": [],
+      "UserData": {},
+      "Metadata": {
+        "Creator": "Admin",
+        "CreatedOn": "2015-07-08T16:08:19.49037+03:00",
+        "Editor": null,
+        "TimeStamp": null,
+        "Status": 0
+      }
+    },
+    "2": {
+      "Version": 2,
+      "Id": "4f17992c-c071-4cb2-ab59-51a727263af4",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "Width": null,
+      "Height": null,
+      "Type": 0,
+      "Access": null,
+      "TextPosition": null,
+      "TextLength": null,
+      "SvgPath": null,
+      "FieldText": null,
+      "FontFamily": null,
+      "FontSize": null,
+      "FontColor": null,
+      "PageNumber": 0,
+      "PenColor": null,
+      "PenWidth": null,
+      "PenStyle": null,
+      "BackgroundColor": null,
+      "Row": null,
+      "Column": null,
+      "AnnotationReplies": [],
+      "UserData": {},
+      "Metadata": {
+        "Creator": null,
+        "CreatedOn": "0001-01-01T00:00:00",
+        "Editor": "Admin",
+        "TimeStamp": "2015-07-08T16:12:01.8310097+03:00",
+        "Status": 2
+      }
+    },
+    "3": {
+      "Version": 3,
+      "Id": "4f17992c-c071-4cb2-ab59-51a727263af4",
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "Width": null,
+      "Height": null,
+      "Type": 0,
+      "Access": null,
+      "TextPosition": null,
+      "TextLength": null,
+      "SvgPath": null,
+      "FieldText": null,
+      "FontFamily": null,
+      "FontSize": null,
+      "FontColor": null,
+      "PageNumber": 0,
+      "PenColor": null,
+      "PenWidth": null,
+      "PenStyle": null,
+      "BackgroundColor": null,
+      "Row": null,
+      "Column": null,
+      "AnnotationReplies": [],
+      "UserData": {},
+      "Metadata": {
+        "Creator": null,
+        "CreatedOn": "0001-01-01T00:00:00",
+        "Editor": "Admin",
+        "TimeStamp": "2015-07-08T16:12:09.1507678+03:00",
+        "Status": 2
+      }
+    }
+  },
+  "b3cca20d-72bc-4d3f-b94a-227d7cee1c9d": {
+    "1": {
+      "Version": 1,
+      "Id": "b3cca20d-72bc-4d3f-b94a-227d7cee1c9d",
+      "Position": {
+        "X": 100.0,
+        "Y": 100.0
+      },
+      "Width": 30.0,
+      "Height": 10.0,
+      "Type": 0,
+      "Access": null,
+      "TextPosition": null,
+      "TextLength": null,
+      "SvgPath": null,
+      "FieldText": null,
+      "FontFamily": null,
+      "FontSize": null,
+      "FontColor": null,
+      "PageNumber": 1,
+      "PenColor": null,
+      "PenWidth": null,
+      "PenStyle": null,
+      "BackgroundColor": null,
+      "Row": null,
+      "Column": null,
+      "AnnotationReplies": [],
+      "UserData": {},
+      "Metadata": {
+        "Creator": "Admin",
+        "CreatedOn": "2015-07-08T16:12:37.6696312+03:00",
+        "Editor": null,
+        "TimeStamp": null,
+        "Status": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+﻿@model dynamic
+
+@using (Html.BeginForm("CreateNewAnnotationReply", "Annotation", new {fileId = @Model.DocumentId, annotationId = @Model.AnnotationId}, FormMethod.Post, new {@class = "form-horizontal"}))
+{
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label for="User" class="col-sm-2 control-label">User:</label>
+            <div class="col-sm-10">
+                <input type="text" name="User" id="User" value=""/>
+            </div>
+            <label for="Message" class="col-sm-2 control-label">Message:</label>
+            <div class="col-sm-10">
+                <input type="text" name="Message" id="Message" value=""/>
+            </div>
+            <label for="Id" class="col-sm-2 control-label">Id:</label>
+            <div class="col-sm-10">
+                <input type="text" name="Id" id="Id" value=""/>
+            </div>
+            <label for="ParentReplyId" class="col-sm-2 control-label">ParentReplyId:</label>
+            <div class="col-sm-10">
+                <input type="text" name="ParentReplyId" id="ParentReplyId" value=""/>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button class="btn btn-primary  btn-annotation" type="submit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

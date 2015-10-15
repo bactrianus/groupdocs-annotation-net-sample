@@ -1,0 +1,52 @@
+[
+  {
+    "Name": "Guest",
+    "Permissions": [
+      "CanViewDocument"
+    ]
+  },
+  {
+    "Name": "Viewer",
+    "Permissions": [
+      "CanViewDocument",
+      "CanEdit",
+      "CanDelete",
+      "CanDownload",
+      "CanViewAnnotations"
+    ]
+  },
+  {
+    "Name": "Moderator",
+    "Permissions": [
+      "CanViewAnnotations",
+      "CanDelete"
+    ]
+  },
+  {
+    "Name": "Admin",
+    "Permissions": [
+      "CanEdit",
+      "CanDownload",
+      "CanViewDocument",
+      "CanViewAnnotations",
+      "CanViewCollaborators",
+      "CanAddCollaborators",
+      "CanEditCollaborators",
+      "CanDeleteCollaborators",
+      "CanCreateAnnotations",
+      "CanViewReply",
+      "CanAddReply",
+      "CanEditReply",
+      "CanDelete",
+      "CanUploadDocument"
+    ]
+  },
+  {
+    "Name": "User",
+    "Permissions": [
+      "CanViewDocument",
+      "CanViewAnnotations",
+      "CanEdit"
+    ]
+  }
+]

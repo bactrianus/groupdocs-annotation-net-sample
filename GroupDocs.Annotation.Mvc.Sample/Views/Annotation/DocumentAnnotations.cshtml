@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "Document annotations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model GroupDocs.Annotation.Mvc.Sample.Models.DocumentAnnotationModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <title>DocumentAnnotation</title>
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+    <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li>
+                <h2>@Model.documentMetadata.Name</h2>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="@Url.Action("CreateAnnotation", "Annotation", new {fileId = @Model.documentMetadata.DocumentId})">Create new annotation</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "Annotation")">Back to the main page</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+@if (!Model.annotationsDictionary.Any())
+{
+    <div class="row">
+        <div class="col-md-3">There no annotations in the document</div>
+    </div>
+}
+
+@foreach (var annotation in Model.annotationsDictionary)
+{
+    <div class="row">
+        <div class="col-md-8 col-sm-offset-2">
+            <textarea rows="30" style="width: 100%" readonly>
+                
+                
+                    @annotation.Value
+                
+            
+            </textarea>
+            <div style="float: right">
+                @using (Html.BeginForm("EditAnnotation", "Annotation", new {fileId = @Model.documentMetadata.DocumentId, annotationId = annotation.Key}, FormMethod.Post, new {enctype = "multipart/form-data"}))
+                {
+                    <button class="btn btn-default btn-annotation" type="submit">Edit</button>
+                }
+                @using (Html.BeginForm("AllVersionsOfAnnotation", "Annotation", new {fileId = @Model.documentMetadata.DocumentId, annotationId = annotation.Key}, FormMethod.Post, new {enctype = "multipart/form-data"}))
+                {
+                    <button class="btn btn-default btn-annotation" type="submit">Get all versions</button>
+                }
+                @using (Html.BeginForm("DeleteAnnotation", "Annotation", new {fileId = @Model.documentMetadata.DocumentId, annotationId = annotation.Key}, FormMethod.Post, new {enctype = "multipart/form-data"}))
+                {
+                    <button class="btn btn-default btn-annotation" type="submit">Delete</button>
+                }
+            </div>
+
+        </div>
+        <br/>
+    </div>
+}
+</body>
+</html>
