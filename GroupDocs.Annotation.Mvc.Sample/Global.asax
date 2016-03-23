@@ -1,1 +1,0 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="GroupDocs.Annotation.Mvc.Sample.WebApiApplication" Language="C#" %>
