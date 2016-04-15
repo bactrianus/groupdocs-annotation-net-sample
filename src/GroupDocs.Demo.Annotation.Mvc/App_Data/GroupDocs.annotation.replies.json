@@ -1,0 +1,38 @@
+[
+  {
+    "Id": 1,
+    "AnnotationId": 1,
+    "UserId": 1,
+    "Guid": "d0eb56ce-f3b8-479b-a824-6a9819012672",
+    "Message": "annotation",
+    "RepliedOn": "2016-04-05T12:11:20.0022528Z",
+    "ParentReplyId": 0
+  },
+  {
+    "Id": 2,
+    "AnnotationId": 2,
+    "UserId": 1,
+    "Guid": "375b8408-3a1d-401d-b0c8-5fcbf5375a16",
+    "Message": "annotation2",
+    "RepliedOn": "2016-04-05T12:11:36.9113749Z",
+    "ParentReplyId": 0
+  },
+  {
+    "Id": 3,
+    "AnnotationId": 4,
+    "UserId": 1,
+    "Guid": "fead9084-e934-4a3b-8700-fa1274505e66",
+    "Message": "huj",
+    "RepliedOn": "2016-04-15T12:40:52.5036112Z",
+    "ParentReplyId": 0
+  },
+  {
+    "Id": 4,
+    "AnnotationId": 5,
+    "UserId": 1,
+    "Guid": "7d943ca5-1059-4fbf-b680-298798cb156a",
+    "Message": "measurement",
+    "RepliedOn": "2016-04-15T13:03:07.620261Z",
+    "ParentReplyId": 0
+  }
+]

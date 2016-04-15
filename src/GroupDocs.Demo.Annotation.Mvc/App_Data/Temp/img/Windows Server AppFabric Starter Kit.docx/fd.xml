@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<WordsFileData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DateModified>2016-04-05T10:50:29.9781289+03:00</DateModified>
+  <DateCreated>2015-11-04T15:02:00Z</DateCreated>
+  <PageCount>1</PageCount>
+  <Pages>
+    <PageData>
+      <Number>1</Number>
+      <Angle>0</Angle>
+      <Width>612</Width>
+      <Height>792</Height>
+      <Rows />
+    </PageData>
+  </Pages>
+  <MaxWidth>612</MaxWidth>
+  <MaxHeight>792</MaxHeight>
+  <ContentControls />
+</WordsFileData>

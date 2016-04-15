@@ -1,0 +1,16 @@
+[
+  {
+    "Id": 1,
+    "DocumentId": 1,
+    "UserId": 1,
+    "AccessRights": 63,
+    "Color": null
+  },
+  {
+    "Id": 2,
+    "DocumentId": 2,
+    "UserId": 1,
+    "AccessRights": 63,
+    "Color": null
+  }
+]
