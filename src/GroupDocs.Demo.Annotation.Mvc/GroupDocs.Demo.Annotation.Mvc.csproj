@@ -59,10 +59,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\GroupDocs.Annotation.dll</HintPath>
     </Reference>
-    <Reference Include="GroupDocs.Data.Json, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\GroupDocs.Data.Json\bin\Debug\GroupDocs.Data.Json.dll</HintPath>
-    </Reference>
     <Reference Include="GroupDocs.Viewer, Version=3.0.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
       <HintPath>..\packages\groupdocs-viewer-dotnet.3.0.0\lib\GroupDocs.Viewer.dll</HintPath>
       <Private>True</Private>
@@ -458,6 +454,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GroupDocs.Data.Json\GroupDocs.Data.Json.csproj">
+      <Project>{352bbb7a-98af-4b05-b8d7-74334edce61c}</Project>
+      <Name>GroupDocs.Data.Json</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

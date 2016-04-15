@@ -1,1 +1,0 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="GroupDocs.Demo.Annotation.WebForms.Global" Language="C#" %>
