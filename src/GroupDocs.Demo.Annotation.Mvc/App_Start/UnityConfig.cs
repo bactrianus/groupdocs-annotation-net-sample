@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Web;
-using GroupDocs.Annotation;
-using GroupDocs.Annotation.Contracts;
-using GroupDocs.Annotation.Data.Contracts.Repositories;
-using GroupDocs.Data.Json;
-using GroupDocs.Data.Json.Repositories;
+using GroupDocs.Annotation.Config;
+using GroupDocs.Annotation.Handler;
+using GroupDocs.Annotation.Handler.Input;
 using GroupDocs.Demo.Annotation.Mvc.Security;
 using GroupDocs.Demo.Annotation.Mvc.Service;
 using GroupDocs.Demo.Annotation.Mvc.SignalR;
-using GroupDocs.Viewer.Config;
-using GroupDocs.Viewer.Handler;
 using Microsoft.Practices.Unity;
 
 namespace GroupDocs.Demo.Annotation.Mvc.App_Start
@@ -47,24 +43,31 @@ namespace GroupDocs.Demo.Annotation.Mvc.App_Start
             // container.LoadConfiguration();
             container.RegisterType<IHtmlString, AnnotationWidget>("AnnotationWidget");
 
-            ViewerConfig viewerConfig = new ViewerConfig
-            {
-                StoragePath = AppDomain.CurrentDomain.GetData("DataDirectory") + "/",
-                TempPath = AppDomain.CurrentDomain.GetData("DataDirectory") + "\\Temp",
-                UseCache = true
-            };
+            string repositoryFolder = AppDomain.CurrentDomain.GetData("DataDirectory") + "/";
+            var annotator = new AnnotationImageHandler(
+               new AnnotationConfig { StoragePath = repositoryFolder } ,
+                new Data.Json.Repositories.UserRepository(repositoryFolder),
+                new Data.Json.Repositories.DocumentRepository(repositoryFolder),
+                new Data.Json.Repositories.AnnotationRepository(repositoryFolder),
+                new Data.Json.Repositories.AnnotationReplyRepository(repositoryFolder),
+                new Data.Json.Repositories.AnnotationCollaboratorRepository(repositoryFolder));
 
-            container.RegisterInstance(typeof(ViewerConfig), viewerConfig);
-            container.RegisterInstance(typeof (ViewerImageHandler), new ViewerImageHandler(viewerConfig));
-            container.RegisterInstance(typeof(ViewerHtmlHandler), new ViewerHtmlHandler(viewerConfig));
-            var repositoryFolder = AppDomain.CurrentDomain.GetData("DataDirectory") + "/";
-            container.RegisterInstance(typeof (IDocumentRepository), new DocumentRepository(repositoryFolder));
-            container.RegisterInstance(typeof(IAnnotationCollaboratorRepository), new AnnotationCollaboratorRepository(repositoryFolder));
-            container.RegisterInstance(typeof(IAnnotationReplyRepository), new AnnotationReplyRepository(repositoryFolder));
-            container.RegisterInstance(typeof(IAnnotationRepository), new AnnotationRepository(repositoryFolder));
-            container.RegisterInstance(typeof(IUserRepository), new UserRepository(repositoryFolder));
+            
+            container.RegisterInstance(typeof(IUserDataHandler), annotator.GetUserDataHandler());
 
-            container.RegisterType<IAnnotator, Annotator>();
+
+            #region Instances
+            //container.RegisterInstance(typeof (IDocumentDataHandler), new DocumentRepository(repositoryFolder));
+            //container.RegisterInstance(typeof(IAnnotationCollaboratorDataHandler), new AnnotationCollaboratorRepository(repositoryFolder));
+            //container.RegisterInstance(typeof(IAnnotationReplyDataHandler), new AnnotationReplyRepository(repositoryFolder));
+            //container.RegisterInstance(typeof(IAnnotationDataHandler), new AnnotationRepository(repositoryFolder));
+            //container.RegisterInstance(typeof(IInputDataHandler), new InputDataHandler(repositoryFolder));
+            //container.RegisterInstance(typeof(IFileDataStore), new FileStore(repositoryFolder));
+            #endregion Instances
+
+
+            container.RegisterInstance(typeof(AnnotationImageHandler), annotator);
+
             container.RegisterType<IAnnotationService, AnnotationService>();
             container.RegisterType<IAuthenticationService, AuthenticationService>();
             container.RegisterType<IAnnotationBroadcaster, AnnotationBroadcaster>();

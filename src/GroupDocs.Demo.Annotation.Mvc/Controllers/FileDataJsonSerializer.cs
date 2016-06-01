@@ -2,9 +2,8 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using GroupDocs.Viewer.Domain;
-using GroupDocs.Viewer.Converter.Options;
 using System.Collections.Generic;
+using GroupDocs.Annotation.Domain;
 
 namespace MvcSample.Controllers
 {
@@ -17,10 +16,6 @@ namespace MvcSample.Controllers
         /// The _file data
         /// </summary>
         private readonly List<PageData> _fileData;
-        /// <summary>
-        /// The _options
-        /// </summary>
-        private readonly FileDataOptions _options;
 
         /// <summary>
         /// The _default culture
@@ -31,11 +26,9 @@ namespace MvcSample.Controllers
         /// Initializes a new instance of the <see cref="FileDataJsonSerializer"/> class.
         /// </summary>
         /// <param name="fileData">The file data.</param>
-        /// <param name="options">The options.</param>
-        public FileDataJsonSerializer(List<PageData> fileData, FileDataOptions options)
+        public FileDataJsonSerializer(List<PageData> fileData)
         {
             _fileData = fileData;
-            _options = options;
         }
 
         /// <summary>
@@ -76,7 +69,7 @@ namespace MvcSample.Controllers
 
                 AppendPage(pageData, json);
 
-                bool includeRows = _options.UsePdf && pageData.Rows.Count > 0;
+                bool includeRows = pageData.Rows.Count > 0;
                 if (includeRows)
                 {
                     json.Append(",\"rows\":[");
@@ -124,57 +117,6 @@ namespace MvcSample.Controllers
             json.Append("}"); // document
 
             return json.ToString();
-        }
-
-        /// <summary>
-        /// Serializes the specified words file data.
-        /// </summary>
-        /// <param name="wordsFileData">The words file data.</param>
-        /// <returns>System.String.</returns>
-        private string SerializeWords(PageData wordsFileData)
-        {
-         /*   StringBuilder json = new StringBuilder();
-
-            json.Append(string.Format("{{\"maxPageHeight\":{0},\"widthForMaxHeight\":{1}",
-                _fileData., _fileData.MaxHeight));
-            json.Append(",\"pages\":[");
-
-            int pageCount = wordsFileData.Pages.Count;
-            for (int i = 0; i < pageCount; i++)
-            {
-                PageData pageData = wordsFileData.Pages[i];
-
-                bool needSeparator = pageData.Number != 1;
-                if (needSeparator)
-                    json.Append(",");
-
-                AppendPage(pageData, json);
-
-                json.Append("}"); // page
-            }
-            json.Append("]"); // pages
-
-            bool includeContentControls = _options.IncludeContentControls && wordsFileData.ContentControls.Count > 0;
-            if (includeContentControls)
-            {
-                json.Append(", \"contentControls\":[");
-                bool needSeparator = false;
-                foreach (ContentControl contentControl in wordsFileData.ContentControls)
-                {
-                    if (needSeparator)
-                        json.Append(',');
-
-                    AppendContentControl(contentControl, json);
-
-                    needSeparator = true;
-                }
-                json.Append("]"); //contentControls
-            }
-            json.Append("}"); //document
-
-            return json.ToString();
-          * */
-            return "";
         }
 
         /// <summary>

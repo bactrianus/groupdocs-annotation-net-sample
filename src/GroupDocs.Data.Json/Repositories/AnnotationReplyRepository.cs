@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using GroupDocs.Annotation.Data.Contracts.Repositories;
-using GroupDocs.Annotation.Data.Contracts.DataObjects;
+using GroupDocs.Annotation.Handler.Input;
+using GroupDocs.Annotation.Handler.Input.DataObjects;
+
 namespace GroupDocs.Data.Json.Repositories
 {
-    public class AnnotationReplyRepository : JsonRepository<AnnotationReply>, IAnnotationReplyRepository
+    public class AnnotationReplyRepository : JsonRepository<AnnotationReply>, IAnnotationReplyDataHandler
     {
         
         private const string _repoName = "GroupDocs.annotation.replies.json";

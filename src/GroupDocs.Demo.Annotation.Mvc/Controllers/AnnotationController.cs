@@ -3,8 +3,10 @@ using System.IO;
 using System.Web;
 using System.Web.Mvc;
 using GroupDocs.Annotation;
-using GroupDocs.Annotation.Contracts;
-using GroupDocs.Annotation.Data.Contracts.Repositories;
+using GroupDocs.Annotation.Domain;
+using GroupDocs.Annotation.Exception;
+using GroupDocs.Annotation.Handler;
+using GroupDocs.Annotation.Handler.Input.DataObjects;
 using GroupDocs.Demo.Annotation.Mvc.App_Start;
 using GroupDocs.Demo.Annotation.Mvc.Options;
 using GroupDocs.Demo.Annotation.Mvc.Responses;
@@ -31,7 +33,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
             
             //Here you should apply proper GroupDocs.Annotation license (in case you want to
             //use this sample without trial limits)
-            //new License().SetLicense("C:/annotation.net/resources/licenses/GroupDocs.Annotation_26_06_2015.lic");
+            //new License().SetLicense("path_to_proper_lic");
         }
 
         #region Annotation members
@@ -288,7 +290,8 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
         [AcceptVerbs("GET", "POST", "OPTIONS")]
         public ActionResult UploadFile(string user_id, string fld, string fileName, bool? multiple = false, string callback = null)
         {
-            var user = UnityConfig.GetConfiguredContainer().Resolve<IUserRepository>().GetUserByGuid(user_id);
+            var user = UnityConfig.GetConfiguredContainer().Resolve<AnnotationImageHandler>().GetUserDataHandler().GetUserByGuid(user_id) ??
+                       new User();
             try
             {
                 var files = HttpContext.Request.Files;
@@ -303,7 +306,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
                 }
 
                 var fileId = Path.Combine(fld, fileName ?? files[0].FileName);
-                var annotator = UnityConfig.GetConfiguredContainer().Resolve<IAnnotator>();
+                AnnotationImageHandler annotator = UnityConfig.GetConfiguredContainer().Resolve<AnnotationImageHandler>();
                 try
                 {
                     annotator.CreateDocument(fileId, DocumentType.Pdf, user.Id);

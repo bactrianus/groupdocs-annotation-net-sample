@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using System.Xml.Serialization;
-using GroupDocs.Annotation.Contracts;
+using GroupDocs.Annotation.Domain;
 
 namespace GroupDocs.Demo.Annotation.Mvc.AnnotationResults.Data
 {

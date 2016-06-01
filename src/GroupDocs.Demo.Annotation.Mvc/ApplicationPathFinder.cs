@@ -33,8 +33,7 @@ namespace GroupDocs.Demo.Annotation.Mvc
             {
                 HttpApplicationState application = context.Application;
                 baseUrl = (string) application["GroupdocsBaseUrl"];
-
-
+                
                 if(baseUrl == null)
                 {
                     HttpRequest request = context.Request;

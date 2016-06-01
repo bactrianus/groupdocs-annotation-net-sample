@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GroupDocs.Annotation.Data.Contracts;
+using GroupDocs.Annotation.Handler.Input;
+using GroupDocs.Annotation.Handler.Input.DataObjects;
 
 namespace GroupDocs.Data.Json.Repositories
 {

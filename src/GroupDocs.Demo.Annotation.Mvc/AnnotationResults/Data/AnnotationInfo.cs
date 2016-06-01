@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
-using GroupDocs.Annotation.Contracts;
+using GroupDocs.Annotation.Domain;
 using Point = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.DataGeometry.Point;
 using Rectangle = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.DataGeometry.Rectangle;
 

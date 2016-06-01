@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using GroupDocs.Annotation.Data.Contracts.DataObjects;
-using GroupDocs.Annotation.Data.Contracts.Repositories;
+using GroupDocs.Annotation.Handler.Input;
+using GroupDocs.Annotation.Handler.Input.DataObjects;
 
 namespace GroupDocs.Data.Json.Repositories
 {
-    public class UserRepository : JsonRepository<User>, IUserRepository
+    public class UserRepository : JsonRepository<User>, IUserDataHandler
     {
         private const string _repoName = "GroupDocs.users.json";
 

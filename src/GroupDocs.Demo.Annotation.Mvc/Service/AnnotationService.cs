@@ -4,25 +4,22 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using AutoMapper;
-using GroupDocs.Annotation.Contracts;
-using GroupDocs.Annotation.Data.Contracts.DataObjects;
-using GroupDocs.Annotation.Data.Contracts.Repositories;
-using GroupDocs.Demo.Annotation.Mvc.App_Start;
+using GroupDocs.Annotation.Domain;
+using GroupDocs.Annotation.Exception;
+using GroupDocs.Annotation.Handler;
+using GroupDocs.Annotation.Handler.Input.DataObjects;
+using GroupDocs.Annotation.Handler.Input;
 using GroupDocs.Demo.Annotation.Mvc.Options;
 using GroupDocs.Demo.Annotation.Mvc.SignalR;
-using GroupDocs.Viewer.Config;
-using GroupDocs.Viewer.Domain.Options;
-using GroupDocs.Viewer.Handler;
-using Microsoft.Practices.Unity;
 using AddReplyResult = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.AddReplyResult;
 using AnnotationInfo = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.Data.AnnotationInfo;
 using AnnotationReplyInfo = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.Data.AnnotationReplyInfo;
-using AnnotationReviewerRights = GroupDocs.Annotation.Contracts.AnnotationReviewerRights;
-using AnnotationType = GroupDocs.Annotation.Contracts.AnnotationType;
+using AnnotationReviewerRights = GroupDocs.Annotation.Domain.AnnotationReviewerRights;
+using AnnotationType = GroupDocs.Annotation.Domain.AnnotationType;
 using CreateAnnotationResult = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.CreateAnnotationResult;
 using DeleteAnnotationResult = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.DeleteAnnotationResult;
 using DeleteReplyResult = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.DeleteReplyResult;
-using DocumentType = GroupDocs.Annotation.Contracts.DocumentType;
+using DocumentType = GroupDocs.Annotation.Domain.DocumentType;
 using EditReplyResult = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.EditReplyResult;
 using GetCollaboratorsResult = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.GetCollaboratorsResult;
 using ListAnnotationsResult = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.ListAnnotationsResult;
@@ -47,9 +44,10 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
         #region Fields
         private readonly IAnnotationBroadcaster _annotationBroadcaster;
         private readonly IAuthenticationService _authenticationSvc;
-        private readonly IUserRepository _userSvc;
-        private readonly IAnnotator _annotator;
-        private readonly IDocumentRepository _documentSvc;
+        private readonly IUserDataHandler _userSvc;
+        private readonly AnnotationImageHandler _annotator;
+        private readonly IDocumentDataHandler _documentSvc;
+        private readonly IInputDataHandler _fileSvc;
         private string storagePath = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
         private IMapper _mapper;
         #endregion Fields
@@ -59,40 +57,39 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
         /// </summary>
         /// <param name="annotationBroadcaster">The annotation Socket events broadcasting object</param>
         /// <param name="authenticationSvc">The authentication service</param>
-        /// <param name="userSvc">The user management service</param>
         /// <param name="annotator">The annotation management service</param>
-        /// <param name="documentSvc">The document management service</param>
-        public AnnotationService(IAnnotationBroadcaster annotationBroadcaster, IAuthenticationService authenticationSvc, IUserRepository userSvc,
-            IAnnotator annotator, IDocumentRepository documentSvc)
+        public AnnotationService(IAnnotationBroadcaster annotationBroadcaster, IAuthenticationService authenticationSvc,
+            AnnotationImageHandler annotator)
         {
             _annotationBroadcaster = annotationBroadcaster;
             _authenticationSvc = authenticationSvc;
-            _userSvc = userSvc;
+            _userSvc = annotator.GetUserDataHandler();
             _annotator = annotator;
-            _documentSvc = documentSvc;
+            _documentSvc = annotator.GetDocumentDataHandler();
+            _fileSvc = annotator.GetInputDataHandler();
             MapperConfiguration config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Rectangle, Rectangle>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.ReviewerInfo, ReviewerInfo>();
-                cfg.CreateMap<ReviewerInfo, GroupDocs.Annotation.Contracts.ReviewerInfo>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.AnnotationReplyInfo, AnnotationReplyInfo>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.TextFieldInfo, TextFieldInfo>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.Result, Result>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Point?, Point>()
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Rectangle, Rectangle>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.ReviewerInfo, ReviewerInfo>();
+                cfg.CreateMap<ReviewerInfo, GroupDocs.Annotation.Domain.ReviewerInfo>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.AnnotationReplyInfo, AnnotationReplyInfo>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.TextFieldInfo, TextFieldInfo>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.Result, Result>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Point?, Point>()
                 .ForMember(dst => dst.X, opt => opt.MapFrom(src => src.HasValue ? src.Value.X : 0.0))
                 .ForMember(dst => dst.Y, opt => opt.MapFrom(src => src.HasValue ? src.Value.Y : 0.0));
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.AnnotationInfo, AnnotationInfo>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.ListAnnotationsResult, ListAnnotationsResult>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.SetCollaboratorsResult, SetCollaboratorsResult>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.CreateAnnotationResult, CreateAnnotationResult>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.DeleteAnnotationResult, DeleteAnnotationResult>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.AddReplyResult, AddReplyResult>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.DeleteReplyResult, DeleteReplyResult>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.EditReplyResult, EditReplyResult>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.MoveAnnotationResult, MoveAnnotationResult>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.ResizeAnnotationResult, ResizeAnnotationResult>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.SaveAnnotationTextResult, SaveAnnotationTextResult>();
-                cfg.CreateMap<GroupDocs.Annotation.Contracts.Results.GetCollaboratorsResult, GetCollaboratorsResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.AnnotationInfo, AnnotationInfo>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.ListAnnotationsResult, ListAnnotationsResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.SetCollaboratorsResult, SetCollaboratorsResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.CreateAnnotationResult, CreateAnnotationResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.DeleteAnnotationResult, DeleteAnnotationResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.AddReplyResult, AddReplyResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.DeleteReplyResult, DeleteReplyResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.EditReplyResult, EditReplyResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.MoveAnnotationResult, MoveAnnotationResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.ResizeAnnotationResult, ResizeAnnotationResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.SaveAnnotationTextResult, SaveAnnotationTextResult>();
+                cfg.CreateMap<GroupDocs.Annotation.Domain.Results.GetCollaboratorsResult, GetCollaboratorsResult>();
             });
             _mapper = config.CreateMapper();
         }
@@ -155,12 +152,12 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
             var collaboratorsInfo = _mapper.Map<GetCollaboratorsResult>(_annotator.GetCollaborators(document.Id));
             var caller = collaboratorsInfo.Collaborators.FirstOrDefault(c => c.Guid == reviewer.Value.UserGuid);
 
-            var annotation = new GroupDocs.Annotation.Contracts.AnnotationInfo
+            var annotation = new GroupDocs.Annotation.Domain.AnnotationInfo
             {
                 Type = (AnnotationType) type,
-                Box = new GroupDocs.Annotation.Contracts.Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height),
+                Box = new GroupDocs.Annotation.Domain.Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height),
                 PageNumber = pageNumber,
-                AnnotationPosition = new GroupDocs.Annotation.Contracts.Point(annotationPosition.X, annotationPosition.Y),
+                AnnotationPosition = new GroupDocs.Annotation.Domain.Point(annotationPosition.X, annotationPosition.Y),
                 SvgPath = svgPath,
                 PenColor = options?.PenColor,
                 PenWidth = options?.PenWidth,
@@ -172,7 +169,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
 
             if(!string.IsNullOrWhiteSpace(message))
             {
-                annotation.Replies = new[] { new GroupDocs.Annotation.Contracts.AnnotationReplyInfo { Message = message } };
+                annotation.Replies = new[] { new GroupDocs.Annotation.Domain.AnnotationReplyInfo { Message = message } };
             }
 
             var result = _annotator.CreateAnnotation(annotation, document.Id, user.Id);
@@ -405,7 +402,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
 
             var annotation = _annotator.GetAnnotation(annotationGuid, document.Id, user.Id);
             var position = new Point { X = left, Y = top };
-            var result = _annotator.MoveAnnotationMarker(annotation.Id, new GroupDocs.Annotation.Contracts.Point(position.X, position.Y), pageNumber, document.Id, user.Id);
+            var result = _annotator.MoveAnnotationMarker(annotation.Id, new GroupDocs.Annotation.Domain.Point(position.X, position.Y), pageNumber, document.Id, user.Id);
 
             _annotationBroadcaster.MoveAnnotationMarker(collaboratorsInfo.Collaborators.Select(c => c.Guid).ToList(), connectionId, annotationGuid, position, pageNumber);
 
@@ -434,7 +431,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
             var collaboratorsInfo = _annotator.GetCollaborators(document.Id);
 
             var annotation = _annotator.GetAnnotation(annotationGuid, document.Id, user.Id);
-            var result = _annotator.SaveTextField(annotation.Id, new GroupDocs.Annotation.Contracts.TextFieldInfo { FieldText = text, FontFamily = fontFamily, FontSize = fontSize }, document.Id, user.Id);
+            var result = _annotator.SaveTextField(annotation.Id, new GroupDocs.Annotation.Domain.TextFieldInfo { FieldText = text, FontFamily = fontFamily, FontSize = fontSize }, document.Id, user.Id);
 
             _annotationBroadcaster.UpdateTextField(collaboratorsInfo.Collaborators.Select(c => c.Guid).ToList(), connectionId, annotationGuid, text, fontFamily, fontSize);
 
@@ -524,7 +521,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
         public SetCollaboratorsResult AddCollaborator(string fileId, string reviewerEmail, string reviewerFirstName, string reviewerLastName, string reviewerInvitationMessage, AnnotationReviewerRights rights, Stream avatar = null)
         {
             MemoryStream memoryStream = (MemoryStream) avatar;
-            var reviewer = new GroupDocs.Annotation.Contracts.ReviewerInfo
+            var reviewer = new GroupDocs.Annotation.Domain.ReviewerInfo
             {
                 PrimaryEmail = reviewerEmail,
                 FirstName = reviewerFirstName,
@@ -692,7 +689,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
                 var user = _userSvc.GetUserByGuid(connectionUser.Value.UserGuid);
                 userId = user.Id;
                 _annotator.AddCollaborator(document.Id,
-                        new GroupDocs.Annotation.Contracts.ReviewerInfo
+                        new GroupDocs.Annotation.Domain.ReviewerInfo
                         {
                             PrimaryEmail = user.Email,
                             FirstName = user.FirstName,
@@ -706,8 +703,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
 
         private void ImportAnnotationWithCleaning(string fileId)
         {
-            var imageHandler = UnityConfig.GetConfiguredContainer().Resolve<ViewerImageHandler>();
-            using(Stream inputDoc = imageHandler.GetFile(fileId).Stream)
+            using(Stream inputDoc = _annotator.GetPdfFile(fileId).Stream)
             {
                 SaveCleanDocument(inputDoc, fileId);
             }
@@ -748,13 +744,12 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
             }
             var user = _userSvc.GetUserByGuid(reviewer.Value.UserGuid);
             _annotator.CheckReviewerPermissions(user.Id, document.Id, AnnotationReviewerRights.CanDownload);
-
-            var tempStorage = UnityConfig.GetConfiguredContainer().Resolve<ViewerConfig>().TempPath;
+            var tempStorage = AppDomain.CurrentDomain.GetData("DataDirectory") + "\\Temp";
             var fileName = Path.ChangeExtension(Path.GetRandomFileName(), "pdf");
-            var imageHandler = UnityConfig.GetConfiguredContainer().Resolve<ViewerImageHandler>();
-            using(Stream inputDoc = imageHandler.GetPdfFile(new PdfFileOptions {Guid = fileId}).Stream)
+            using(Stream inputDoc = _annotator.GetPdfFile(fileId).Stream)
             using(var tempDoc = new FileStream(Path.Combine(tempStorage, fileName), FileMode.Create))
             {
+                inputDoc.Position = 0;
                 inputDoc.CopyTo(tempDoc);
                 return "Temp\\" + fileName;
             }
@@ -774,8 +769,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
 
         public string Export(long documentId, string fileId, long userId)
         {
-            var imageHandler = UnityConfig.GetConfiguredContainer().Resolve<ViewerImageHandler>();
-            using(Stream inputDoc = imageHandler.GetPdfFile(new PdfFileOptions { Guid = fileId }).Stream)
+            using (Stream inputDoc = _annotator.GetPdfFile(fileId).Stream)
             {
                 var resultStream = _annotator.ExportAnnotationsToDocument(documentId, inputDoc, DocumentType.Pdf, userId);
                 var fileName = string.Format("{0}_WithComments_{1}.{2}",
@@ -808,9 +802,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
         /// <param name="userId"></param>
         private void Import(long documentId, string fileId, long userId)
         {
-            //string filePath = Path.Combine(storagePath, fileId);
-            var imageHandler = UnityConfig.GetConfiguredContainer().Resolve<ViewerImageHandler>();
-            using(Stream inputDoc = imageHandler.GetFile(fileId).Stream)
+            using(Stream inputDoc = _annotator.GetPdfFile(fileId).Stream)
             {
                 _annotator.ImportAnnotations(documentId, inputDoc, DocumentType.Pdf, userId);
             }
@@ -830,7 +822,6 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
             inputDoc.Dispose();
             if(!Directory.Exists(uploadDir))
             {
-                // Try to create dir
                 Directory.CreateDirectory(uploadDir);
             }
             using(var stream = File.Create(filePath))

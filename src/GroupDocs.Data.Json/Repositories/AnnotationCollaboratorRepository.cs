@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using GroupDocs.Annotation.Data.Contracts.Repositories;
-using GroupDocs.Annotation.Data.Contracts.DataObjects;
+using GroupDocs.Annotation.Handler.Input;
+using GroupDocs.Annotation.Handler.Input.DataObjects;
 
 namespace GroupDocs.Data.Json.Repositories
 {
-    public class AnnotationCollaboratorRepository : JsonRepository<AnnotationCollaborator>, IAnnotationCollaboratorRepository
+    public class AnnotationCollaboratorRepository : JsonRepository<AnnotationCollaborator>, IAnnotationCollaboratorDataHandler
     {
         private const string _repoName = "GroupDocs.annotation.collaborators.json";
 

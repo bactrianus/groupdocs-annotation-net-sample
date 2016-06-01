@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using GroupDocs.Annotation.Contracts;
+using GroupDocs.Annotation.Domain;
 using GroupDocs.Demo.Annotation.Mvc.Options;
 using AnnotationInfo = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.Data.AnnotationInfo;
 using AnnotationReplyInfo = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.Data.AnnotationReplyInfo;

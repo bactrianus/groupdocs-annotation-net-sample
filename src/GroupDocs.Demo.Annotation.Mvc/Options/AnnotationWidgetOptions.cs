@@ -1,4 +1,4 @@
-﻿using GroupDocs.Annotation.Contracts;
+﻿using GroupDocs.Annotation.Domain;
 
 namespace GroupDocs.Demo.Annotation.Mvc.Options
 {

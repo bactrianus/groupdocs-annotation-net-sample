@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using GroupDocs.Demo.Annotation.Mvc.Options;
-using AnnotationReviewerRights = GroupDocs.Annotation.Contracts.AnnotationReviewerRights;
+using AnnotationReviewerRights = GroupDocs.Annotation.Domain.AnnotationReviewerRights;
 
 namespace GroupDocs.Demo.Annotation.Mvc
 {

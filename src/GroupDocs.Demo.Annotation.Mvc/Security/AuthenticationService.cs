@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Web.Security;
-using GroupDocs.Annotation.Data.Contracts.Repositories;
+using GroupDocs.Annotation.Handler.Input;
 
 namespace GroupDocs.Demo.Annotation.Mvc.Security
 {
@@ -12,12 +12,12 @@ namespace GroupDocs.Demo.Annotation.Mvc.Security
         private static readonly string _anonymousUserName = "GroupDocs@GroupDocs.com";
         private static readonly string _anonymousUserKey = String.Empty;
 
-        private IUserRepository _userSvc;
+        private IUserDataHandler _userSvc;
 
         /// <summary>
         /// Creates an instance of the AuthenticationService class
         /// </summary>
-        public AuthenticationService(IUserRepository userRepository)
+        public AuthenticationService(IUserDataHandler userRepository)
         {
             _userSvc = userRepository;
         }

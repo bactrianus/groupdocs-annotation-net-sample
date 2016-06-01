@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using GroupDocs.Annotation.Contracts;
+using GroupDocs.Annotation.Domain;
 using GroupDocs.Demo.Annotation.Mvc.AnnotationResults;
 using GroupDocs.Demo.Annotation.Mvc.Options;
 using AnnotationReplyInfo = GroupDocs.Demo.Annotation.Mvc.AnnotationResults.Data.AnnotationReplyInfo;
