@@ -297,7 +297,7 @@
 
                 if (phraseMatch) {
                     var phrase = phraseMatch[0];
-                    var internalPattern = new RegExp('.*?' + '(?:[a-z][a-z]+)' + '.*?' + '((?:[a-z][a-z]+))', ["i"]);  
+                    var internalPattern = new RegExp('.*?' + '(?:[a-z][a-z]+)' + '.*?' + '((?:[a-z][a-z]+))', ["i"]);
                     var key = internalPattern.exec(phrase);
                     var localizedWord = this.options.localizedStrings != null ? (this.options.localizedStrings[key[1]] ? this.options.localizedStrings[key[1]] : key[1]) : key[1];
                     if (localizedWord) {
@@ -469,6 +469,12 @@
                 '                <p data-localize="PDFWithoutComments">PDF W/O Comments</p>' +
                 '              </a>' +
                 '            </li>' +
+                '           <li style="display: inline" data-bind="visible: canExport() && $root.docType() == \'words\'">' +
+                '              <a id="btnExportWithoutComments" class="link_with_pointer_cursor" data-bind="click: function() { exportAnnotationsTo(\'words\'); }">' +
+                '                <span class="h_t_d_i_doc"></span>' +
+                '                <p data-localize="WordsWithoutComments">Words with comments</p>' +
+                '              </a>' +
+                '            </li>' +
                 '            <li style="display: inline" data-bind="visible: canDownload()">' +
                 '              <a id="btnExportOriginal" class="link_with_pointer_cursor" data-bind="click: downloadDocument">' +
                 '                <span class="h_t_d_i_normal"></span>' +
@@ -477,7 +483,7 @@
                 '            </li>' +
                 '          </ul>' +
                 '        </div>' +
-                '        <a class="new_head_tools_btn h_t_i_import import_btn import_file_uploader" data-tooltip="Import Annotations" data-localize-tooltip="ImportAnnotations"></a>' +
+                '        <a class="new_head_tools_btn h_t_i_import import_btn import_file_uploader" data-tooltip="Import Annotations" data-localize-tooltip="ImportAnnotations" data-bind="visible: $root.docType() != \'words\'"></a>' +
                 '        <a data-bind="visible: fileExplorerEnabled, click: openFileExplorer" class="btnOpen new_head_tools_btn h_t_i_browser" data-tooltip="Open File" data-localize-tooltip="OpenFile"></a>' +
                 '      </div>' +
 
@@ -528,7 +534,7 @@
 
             if ((this.options.enabledTools & AnnotationTools.Point) == AnnotationTools.Point) {
                 html +=
-                    '    <li data-bind="visible: ($root.isPointAnnotationButtonEnabled || !$root.embeddedAnnotation)">' +
+                    '    <li data-bind="visible: (($root.isPointAnnotationButtonEnabled || !$root.embeddedAnnotation) &&  $root.docType() != \'words\')">' +
                     '      <button class="tool_field point_box" data-bind="css: {\'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.Point }, click: setPointAnnotationMode">' +
                     '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="PointAnnotation">Point annotation</div>' +
                     '      </button>' +
@@ -546,7 +552,7 @@
 
             if ((this.options.enabledTools & AnnotationTools.Polyline) == AnnotationTools.Polyline) {
                 html +=
-                    '    <li data-bind="visible: ($root.isPolylineAnnotationButtonEnabled || !$root.embeddedAnnotation)">' +
+                    '    <li data-bind="visible: ($root.isPolylineAnnotationButtonEnabled || !$root.embeddedAnnotation) &&  $root.docType() != \'words\'">' +
                     '      <button class="tool_field polyline_box" data-bind="css: {\'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.Polyline }, click: setPolylineAnnotationMode">' +
                     '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="PolylineAnnotation">Polyline annotation</div>' +
                     '      </button>' +
@@ -564,22 +570,22 @@
 
             if ((this.options.enabledTools & AnnotationTools.Watermark) == AnnotationTools.Watermark) {
                 html +=
-                '    <li data-bind="visible: ($root.isWatermarkAnnotationButtonEnabled || !$root.embeddedAnnotation)">' +
+                '    <li data-bind="visible: (($root.isWatermarkAnnotationButtonEnabled || !$root.embeddedAnnotation) &&  $root.docType() != \'words\')">' +
                 '      <button class="tool_field watermark_box" data-bind="css: {\'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.Watermark }, click: setWatermarkAnnotationMode">' +
                 '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="WatermarkTool">Watermark tool</div>' +
                 '      </button>' +
                 '    </li>';
             }
 
-           /* if ((this.options.enabledTools & AnnotationTools.TextReplacement) == AnnotationTools.TextReplacement) {
+            if ((this.options.enabledTools & AnnotationTools.TextReplacement) == AnnotationTools.TextReplacement) {
                 html +=
-                '    <li>' +
+                '    <li data-bind="visible: ($root.isTextReplacementAnnotationButtonEnabled) &&  $root.docType() == \'words\'">' +
                 '      <button class="tool_field replace_box" data-bind="css: {\'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.TextReplacement }, click: setReplacementAnnotationMode">' +
                 '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="TextReplacementTool">Text replacement tool</div>' +
                 '      </button>' +
                 '    </li>';
             }
-            */
+
             if ((this.options.enabledTools & AnnotationTools.Arrow) == AnnotationTools.Arrow) {
                 html +=
                 '    <li>' +
@@ -619,7 +625,7 @@
             if ((this.options.enabledTools & AnnotationTools.Distance) == AnnotationTools.Distance) {
                 html +=
                 '    <li>' +
-                '      <button class="tool_field ruler_tool" data-bind="css: { \'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.Distance }, click: setDistanceAnnotationMode">' +
+                '      <button class="tool_field ruler_tool" data-bind="css: { \'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.Distance }, visible: $root.docType() != \'words\', click: setDistanceAnnotationMode">' +
                 '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="DistanceTool">Distance tool</div>' +
                 '      </button>' +
                 '    </li>';
@@ -845,7 +851,7 @@
                 '                 data-bind="style: { left: $data.annotation.displayBounds().left() + \'px\', top: $data.annotation.displayBounds().bottom() + 34 + \'px\', display: \'block\' }, click: function () { $root.showExpandedCommentsPanel(); $data.annotation.deactivateActiveReply(); $root.activeAnnotation($data.annotation); }">' +
                 '              <div class="replace_tab" data-bind="text: $data.REPLACETEXT">Replace</div>' +
                 '              <div class="doc_text_area_text mousetrap" data-bind="htmlValue: text, ' +
-                '                   style: { minWidth: $data.annotation.displayBounds().width() + \'px\', minHeight: $data.annotation.displayBounds().height() + \'px\', display: \'block\' },' +
+                '                   style: { minWidth: ($data.annotation.displayBounds().width()>170?$data.annotation.displayBounds().width():170) + \'px\', minHeight: ($data.annotation.displayBounds().height()<70?50:($data.annotation.displayBounds().height()>150?120:$data.annotation.displayBounds().height())) + \'px\', display: \'block\' },' +
                 '                   attr: { contenteditable: true },' +
                 '                   event: { koValueUpdated: function() { $root.saveTextField($data); return true; },' +
                 '                       mouseover: function() { if (!$data.annotation.isBeingDeleted()) { var sel = $root.getSelectableInstance(); sel._mouseDestroy(); } }, ' +
@@ -899,7 +905,7 @@
                 '  <h3 class="ellipsis" data-localize="ImportingInternalDocumentAnnotations">Importing internal document annotations...</h3>' +
                 '</div>' +
 
-               
+
                 '<div class="modal fade manage_collaborators_modal" id="modal_inv">' +
                 '  <a data-dismiss="modal" class="popclose"></a>' +
                 '  <div class="sigModalbody">' +

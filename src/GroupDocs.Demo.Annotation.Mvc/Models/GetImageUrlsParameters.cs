@@ -17,6 +17,10 @@
 
     public class GetImageUrlsResponse : OperationStatusResponse
     {
+        public GetImageUrlsResponse(string[] imageUrls)
+        {
+            this.imageUrls = imageUrls;
+        }
         public string[] imageUrls { get; set; }
     }
 }

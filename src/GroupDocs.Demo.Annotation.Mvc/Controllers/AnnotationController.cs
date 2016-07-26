@@ -231,7 +231,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
         {
             try
             {
-                string fileName = _annotationSvc.ExportAnnotations(connectionId, fileId);
+                string fileName = _annotationSvc.ExportAnnotations(connectionId, fileId, format);
 
                 var url = Url.Action("DownloadFile", new
                 {

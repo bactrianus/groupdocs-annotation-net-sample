@@ -714,8 +714,11 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
         /// </summary>
         /// <param name="connectionId">Socket connection identifier to validate user permissions for</param>
         /// <param name="fileId">The document path to export annotations to</param>
-        /// <returns>A path to the result file containing exported annotations</returns>
-        public string ExportAnnotations(string connectionId, string fileId)
+        /// <param name="docType">Type of the document.</param>
+        /// <returns>
+        /// A path to the result file containing exported annotations
+        /// </returns>
+        public string ExportAnnotations(string connectionId, string fileId, string docType)
         {
             var document = _documentSvc.GetDocument(fileId);
             var reviewer = _annotationBroadcaster.GetConnectionUser(connectionId);
@@ -725,7 +728,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
             }
             var user = _userSvc.GetUserByGuid(reviewer.Value.UserGuid);
             _annotator.CheckReviewerPermissions(user.Id, document.Id, AnnotationReviewerRights.CanExport);
-            return Export(document.Id, fileId, user.Id);
+            return Export(document.Id, fileId, user.Id, docType);
         }
 
         /// <summary>
@@ -767,31 +770,42 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
             return document;
         }
 
-        public string Export(long documentId, string fileId, long userId)
+        public string Export(long documentId, string fileId, long userId, string format)
         {
-            using (Stream inputDoc = _annotator.GetPdfFile(fileId).Stream)
+            var docType = DocumentType.Pdf;
+            string extension = "pdf";
+            Stream inputDoc;
+            if(format == "words")
             {
-                var resultStream = _annotator.ExportAnnotationsToDocument(documentId, inputDoc, DocumentType.Pdf, userId);
-                var fileName = string.Format("{0}_WithComments_{1}.{2}",
-                    Path.GetFileNameWithoutExtension(fileId),
-                    DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss"),
-                    "pdf");
-                string tempFilePath = Path.Combine(storagePath + "//Temp", fileName);
-                try
-                {
-                    using(var fs = new FileStream(tempFilePath, FileMode.Create))
-                    {
-                        resultStream.Position = 0;
-                        resultStream.CopyTo(fs);
-                    }
-                }
-                catch(Exception e)
-                {
-                    throw new AnnotatorException("Failed to save output file to the storage.");
-                }
-
-                return Path.Combine("Temp", fileName);
+                docType = DocumentType.Words;
+                extension = "docx";
+                inputDoc = _annotator.GetFile(fileId).Stream;
             }
+            else
+            {
+                inputDoc = _annotator.GetPdfFile(fileId).Stream;
+            }
+            var resultStream = _annotator.ExportAnnotationsToDocument(documentId, inputDoc, docType, userId);
+            inputDoc.Dispose();
+            string fileName = string.Format("{0}_WithComments_{1}.{2}",
+                Path.GetFileNameWithoutExtension(fileId),
+                DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss"),
+                extension);
+            string tempFilePath = Path.Combine(storagePath + "//Temp", fileName);
+            try
+            {
+                using(var fs = new FileStream(tempFilePath, FileMode.Create))
+                {
+                    resultStream.Position = 0;
+                    resultStream.CopyTo(fs);
+                }
+            }
+            catch(Exception e)
+            {
+                throw new AnnotatorException("Failed to save output file to the storage.");
+            }
+            
+            return Path.Combine("Temp", fileName);
         }
 
         /// <summary>

@@ -196,6 +196,7 @@
     <Compile Include="IAnnotationService.cs" />
     <Compile Include="IAuthenticationService.cs" />
     <Compile Include="Models\FileBrowserTreeDataResponse.cs" />
+    <Compile Include="Models\GetDocumentPageImageParameters.cs" />
     <Compile Include="Models\GetFileParameters.cs" />
     <Compile Include="Models\GetImageUrlsParameters.cs" />
     <Compile Include="Models\ViewDocumentParameters.cs" />
@@ -449,9 +450,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GroupDocs.Data.Json\GroupDocs.Data.Json.csproj">

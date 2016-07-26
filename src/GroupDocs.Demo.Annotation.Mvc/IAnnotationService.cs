@@ -242,8 +242,11 @@ namespace GroupDocs.Demo.Annotation.Mvc
         /// </summary>
         /// <param name="connectionId">Socket connection identifier to validate user permissions for</param>
         /// <param name="fileId">The document path to export annotations to</param>
-        /// <returns>A path to the result file containing exported annotations</returns>
-        string ExportAnnotations(string connectionId, string fileId);
+        /// <param name="docType">Type of the document.</param>
+        /// <returns>
+        /// A path to the result file containing exported annotations
+        /// </returns>
+        string ExportAnnotations(string connectionId, string fileId, string docType);
 
         /// <summary>
         /// Converts a document to PDF format
