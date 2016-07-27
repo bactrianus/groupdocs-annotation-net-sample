@@ -1,26 +1,31 @@
-.replyAuthor {
+.replyAuthor
+{
     color: #707070;
     vertical-align: top;
     display: inline-block;
     width: 95%;
     overflow: hidden;
 }
-.replyContent {
+
+.replyContent
+{
     word-wrap: break-word;
-    display:inline;
+    display: inline;
     width: 100%;
 }
-.replyContent.textInput {
-    height: 16px;
-    width: 90%;
-    font-size: 10px;
-}
+
+    .replyContent.textInput
+    {
+        height: 16px;
+        width: 90%;
+        font-size: 10px;
+    }
 
 
 .annotationsContainer
 {
-    position:absolute;
-    z-index:23;
+    position: absolute;
+    z-index: 23;
     width: 100%;
     height: 100%;
     top: 0;
@@ -60,7 +65,10 @@
     overflow: visible;
 }
 
-.raphaelWrapper svg { overflow: visible !important; }
+    .raphaelWrapper svg
+    {
+        overflow: visible !important;
+    }
 
 .figureContextMenu
 {
@@ -76,7 +84,8 @@
     content: ":";
 }*/
 
-.ellipsis::after {
+.ellipsis::after
+{
     content: "...";
 }
 
@@ -90,16 +99,18 @@
     display: block;
 }
 
-.comment_text {
-   white-space: pre-wrap;      /* CSS3 */   
-   white-space: -moz-pre-wrap; /* Firefox */    
-   white-space: -pre-wrap;     /* Opera <7 */   
-   white-space: -o-pre-wrap;   /* Opera 7 */    
-   word-wrap: break-word;      /* IE */
-   min-height: 18px;
+.comment_text
+{
+    white-space: pre-wrap; /* CSS3 */
+    white-space: -moz-pre-wrap; /* Firefox */
+    white-space: -pre-wrap; /* Opera <7 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* IE */
+    min-height: 18px;
 }
 
-.grpdx .page_number_in_summary {
+.grpdx .page_number_in_summary
+{
     font-size: 14px;
     font-style: italic;
     text-align: center;
@@ -109,16 +120,23 @@
 
 .centered_doc_page
 {
-    margin: 0 auto;   
+    margin: 0 auto;
     display: block !important;
+    margin-right: 18.5%;
 }
 
-.grpdx .page-image,.grpdx .highlight-pane,.grpdx .search-pane{margin:0}
+.grpdx .page-image, .grpdx .highlight-pane, .grpdx .search-pane
+{
+    margin: 0;
+}
 
-.selection-highlight.static { cursor: pointer; }
+.selection-highlight.static
+{
+    cursor: pointer;
+}
 
-.grpdx .comments_sidebar_wrapper .comments_sidebar_collapsed,   
-.grpdx .comments_sidebar_wrapper .comments_sidebar_expanded  
+.grpdx .comments_sidebar_wrapper .comments_sidebar_collapsed,
+.grpdx .comments_sidebar_wrapper .comments_sidebar_expanded
 {
     position: absolute;
     right: 0;
