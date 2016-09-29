@@ -483,7 +483,7 @@
                 '            </li>' +
                 '          </ul>' +
                 '        </div>' +
-                '        <a class="new_head_tools_btn h_t_i_import import_btn import_file_uploader" data-tooltip="Import Annotations" data-localize-tooltip="ImportAnnotations" data-bind="visible: $root.docType() != \'words\'"></a>' +
+                '        <a class="new_head_tools_btn h_t_i_import import_btn import_file_uploader" data-tooltip="Import Annotations" data-localize-tooltip="ImportAnnotations"></a>' +
                 '        <a data-bind="visible: fileExplorerEnabled, click: openFileExplorer" class="btnOpen new_head_tools_btn h_t_i_browser" data-tooltip="Open File" data-localize-tooltip="OpenFile"></a>' +
                 '      </div>' +
 

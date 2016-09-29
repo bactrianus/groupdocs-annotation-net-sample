@@ -107,7 +107,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
 
         public ActionResult LoadFileBrowserTreeData(LoadFileBrowserTreeDataParameters parameters)
         {
-            string path = AppDomain.CurrentDomain.GetData("DataDirectory") + "/";
+            string path = AppDomain.CurrentDomain.GetData("DataDirectory") + "\\";
             if (!string.IsNullOrEmpty(parameters.Path))
                 path = Path.Combine(path, parameters.Path);
 
@@ -321,7 +321,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
             return nodes.Select(_ =>
                 new FileBrowserTreeNode
                 {
-                    path = string.IsNullOrEmpty(path) ? _.Name : string.Format("{0}/{1}", path, _.Name),
+                    path = string.IsNullOrEmpty(path) ? _.Name : string.Format("{0}\\{1}", path, _.Name),
                     docType = string.IsNullOrEmpty(_.DocumentType) ? _.DocumentType : _.DocumentType.ToLower(),
                     fileType = string.IsNullOrEmpty(_.FileType) ? _.FileType : _.FileType.ToLower(),
                     name = _.Name,

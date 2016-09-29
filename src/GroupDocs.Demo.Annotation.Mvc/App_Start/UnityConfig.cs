@@ -45,16 +45,15 @@ namespace GroupDocs.Demo.Annotation.Mvc.App_Start
 
             string repositoryFolder = AppDomain.CurrentDomain.GetData("DataDirectory") + "/";
             var annotator = new AnnotationImageHandler(
-               new AnnotationConfig { StoragePath = repositoryFolder } ,
-                new Data.Json.Repositories.UserRepository(repositoryFolder),
-                new Data.Json.Repositories.DocumentRepository(repositoryFolder),
-                new Data.Json.Repositories.AnnotationRepository(repositoryFolder),
-                new Data.Json.Repositories.AnnotationReplyRepository(repositoryFolder),
-                new Data.Json.Repositories.AnnotationCollaboratorRepository(repositoryFolder));
+               new AnnotationConfig { StoragePath = repositoryFolder }
+                //new Data.Json.Repositories.UserRepository(repositoryFolder),
+                //new Data.Json.Repositories.DocumentRepository(repositoryFolder),
+                //new Data.Json.Repositories.AnnotationRepository(repositoryFolder),
+                //new Data.Json.Repositories.AnnotationReplyRepository(repositoryFolder),
+                //new Data.Json.Repositories.AnnotationCollaboratorRepository(repositoryFolder)
+                );
 
-            
             container.RegisterInstance(typeof(IUserDataHandler), annotator.GetUserDataHandler());
-
 
             #region Instances
             //container.RegisterInstance(typeof (IDocumentDataHandler), new DocumentRepository(repositoryFolder));
@@ -64,10 +63,8 @@ namespace GroupDocs.Demo.Annotation.Mvc.App_Start
             //container.RegisterInstance(typeof(IInputDataHandler), new InputDataHandler(repositoryFolder));
             //container.RegisterInstance(typeof(IFileDataStore), new FileStore(repositoryFolder));
             #endregion Instances
-
-
+            
             container.RegisterInstance(typeof(AnnotationImageHandler), annotator);
-
             container.RegisterType<IAnnotationService, AnnotationService>();
             container.RegisterType<IAuthenticationService, AuthenticationService>();
             container.RegisterType<IAnnotationBroadcaster, AnnotationBroadcaster>();

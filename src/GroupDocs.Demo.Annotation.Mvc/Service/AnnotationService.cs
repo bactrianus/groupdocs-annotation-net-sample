@@ -120,8 +120,8 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
                 });
                 document = _documentSvc.GetDocument(fileId);
             }
-
-            return _mapper.Map<ListAnnotationsResult>(_annotator.GetAnnotations(document.Id, null, user.Id));
+            var result = _annotator.GetAnnotations(document.Id, null, user.Id);
+            return _mapper.Map<ListAnnotationsResult>(result);
         }
 
         /// <summary>
@@ -674,7 +674,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
                 _documentSvc.Add(newDocument);
                 document = _documentSvc.GetDocument(fileId);
             }
-            long userId = 0;
+            long userId = 1;
             if(connectionId == null)
             {
                 AddCollaborator(fileId, _authenticationSvc.AnonymousUserName, null, null, null);
@@ -698,14 +698,20 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
             }
 
             Import(document.Id, fileId, userId);
-            ImportAnnotationWithCleaning(fileId);
+            CleanDocument(fileId);
         }
-
-        private void ImportAnnotationWithCleaning(string fileId)
+        //TODO Clean word document
+        private void CleanDocument(string fileId)
         {
-            using(Stream inputDoc = _annotator.GetPdfFile(fileId).Stream)
+            DocumentType docType;
+            docType = DocumentType.Pdf;
+            if (Path.GetExtension(fileId).ToUpper().Equals(".DOCX") || Path.GetExtension(fileId).ToUpper().Equals(".DOC"))
             {
-                SaveCleanDocument(inputDoc, fileId);
+                docType = DocumentType.Words;
+            }
+            using (Stream inputDoc = _annotator.GetFile(fileId).Stream)
+            {
+                SaveCleanDocument(inputDoc, fileId, docType);
             }
         }
 
@@ -747,14 +753,14 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
             }
             var user = _userSvc.GetUserByGuid(reviewer.Value.UserGuid);
             _annotator.CheckReviewerPermissions(user.Id, document.Id, AnnotationReviewerRights.CanDownload);
-            var tempStorage = AppDomain.CurrentDomain.GetData("DataDirectory") + "\\Temp";
+            //var tempStorage = AppDomain.CurrentDomain.GetData("DataDirectory").ToString();
             var fileName = Path.ChangeExtension(Path.GetRandomFileName(), "pdf");
             using(Stream inputDoc = _annotator.GetPdfFile(fileId).Stream)
-            using(var tempDoc = new FileStream(Path.Combine(tempStorage, fileName), FileMode.Create))
+            using(var tempDoc = new FileStream(Path.Combine(storagePath, fileName), FileMode.Create))
             {
                 inputDoc.Position = 0;
                 inputDoc.CopyTo(tempDoc);
-                return "Temp\\" + fileName;
+                return fileName;
             }
         }
 
@@ -791,7 +797,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
                 Path.GetFileNameWithoutExtension(fileId),
                 DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss"),
                 extension);
-            string tempFilePath = Path.Combine(storagePath + "//Temp", fileName);
+            string tempFilePath = Path.Combine(storagePath, fileName);
             try
             {
                 using(var fs = new FileStream(tempFilePath, FileMode.Create))
@@ -805,7 +811,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
                 throw new AnnotatorException("Failed to save output file to the storage.");
             }
             
-            return Path.Combine("Temp", fileName);
+            return fileName;
         }
 
         /// <summary>
@@ -816,32 +822,37 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
         /// <param name="userId"></param>
         private void Import(long documentId, string fileId, long userId)
         {
-            using(Stream inputDoc = _annotator.GetPdfFile(fileId).Stream)
+            DocumentType docType;
+            docType = DocumentType.Pdf;
+            if (Path.GetExtension(fileId).ToUpper().Equals(".DOCX") || Path.GetExtension(fileId).ToUpper().Equals(".DOC"))
             {
-                _annotator.ImportAnnotations(documentId, inputDoc, DocumentType.Pdf, userId);
+                docType = DocumentType.Words;
+            }
+            using(Stream inputDoc = _annotator.GetFile(fileId).Stream)
+            {
+                _annotator.ImportAnnotations(documentId, inputDoc, docType, userId);
             }
         }
 
-        private void SaveCleanDocument(Stream inputDoc, string fileId)
+        private void SaveCleanDocument(Stream inputDoc, string fileId, DocumentType docType)
         {
-            Stream resultClean = _annotator.RemoveAnnotationStream(inputDoc, DocumentType.Pdf);
-            string path = Path.GetDirectoryName(fileId);
-            var uploadDir = path != ""
-                ? Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data"), path)
-                : HttpContext.Current.Server.MapPath("~/App_Data");
-            var fileName = string.Format("{0}.{1}",
-               Path.GetFileNameWithoutExtension(fileId),
-               "pdf");
-            var filePath = Path.Combine(uploadDir, fileName);
-            inputDoc.Dispose();
+            
+            Stream resultClean = _annotator.RemoveAnnotationStream(inputDoc, docType);
+            resultClean.Seek(0, SeekOrigin.Begin);
+            var uploadDir = HttpContext.Current.Server.MapPath("~/App_Data");
+            
+            var filePath = Path.Combine(uploadDir, fileId);
+            
             if(!Directory.Exists(uploadDir))
             {
                 Directory.CreateDirectory(uploadDir);
             }
             using(var stream = File.Create(filePath))
             {
+                resultClean.Seek(0, SeekOrigin.Begin);
                 resultClean.CopyTo(stream);
             }
+            inputDoc.Dispose();
             resultClean.Dispose();
         }
     }

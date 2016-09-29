@@ -5240,7 +5240,6 @@ $.ctrl = function (key, callback, args) {
                     if (i == 0) {
                         left = Math.min(left, bounds.left());
                     }
-
                     if (i == rects.length - 1) {
                         //alert("BEFORE - left= " + left + ", top=" + top + ", right==" + right + " , bottom=" + bottom);
                         right = Math.min(right, bounds.right());
