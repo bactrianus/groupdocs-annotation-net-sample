@@ -52,47 +52,32 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
             result.docType = docInfo.DocumentType.ToLower();
             result.fileType = docInfo.FileType.ToLower();
 
-            /*List<PageImage> imagePages = annotator.GetPages(request.Path);
-
-            // Provide images urls
-            List<string> urls = new List<string>();
-
-            // If no cache - save images to temp folder
-            string tempFolderPath = Path.Combine(HttpContext.Server.MapPath("~"), "Content", "TempStorage");
-
-            foreach (PageImage pageImage in imagePages)
-            {
-                string docFoldePath = Path.Combine(tempFolderPath, request.Path);
-
-                if (!Directory.Exists(docFoldePath))
-                    Directory.CreateDirectory(docFoldePath);
-
-                string pageImageName = string.Format("{0}\\{1}.png", docFoldePath, pageImage.PageNumber);
-
-                using (Stream stream = pageImage.Stream)
-                using (FileStream fileStream = new FileStream(pageImageName, FileMode.Create))
-                {
-                    stream.Seek(0, SeekOrigin.Begin);
-                    stream.CopyTo(fileStream);
-                }
-
-                string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
-                urls.Add(string.Format("{0}Content/TempStorage/{1}/{2}.png", baseUrl, request.Path, pageImage.PageNumber));
-            }*/
             string applicationHost = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/');
+
             var preloadCount = request.PreloadPagesCount;
             int pageCount = preloadCount ?? 1;
             int[] pageNumbers = new int[docInfo.Pages.Count];
             for (int i = 0; i < pageNumbers.Length; i++)
             {
                 pageNumbers[i] = i;
+
             }
+
+
             GetImageUrlsParameters imageUrlParameters = new GetImageUrlsParameters()
             {
-                Path = request.Path, FirstPage = 0, PageCount = pageNumbers.Length, UsePdf = true, Width = 150, SupportPageRotation = false, UseHtmlBasedEngine = false
+                Path = request.Path,
+                FirstPage = 0,
+                PageCount = pageNumbers.Length,
+                UsePdf = docInfo.Extension.ToLower().Equals("pdf"),
+                Width = docInfo.Pages[0].Width,
+                SupportPageRotation = false,
+                UseHtmlBasedEngine = false
             };
 
+
             result.imageUrls = GetImageUrls(applicationHost, pageNumbers, imageUrlParameters);
+
             //result.imageUrls = urls.ToArray();
 
             JavaScriptSerializer serializer = new JavaScriptSerializer { MaxJsonLength = int.MaxValue };
@@ -128,13 +113,13 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
 
         public ActionResult GetImageUrls(GetImageUrlsParameters parameters)
         {
-            if(string.IsNullOrEmpty(parameters.Path))
+            if (string.IsNullOrEmpty(parameters.Path))
             {
                 return ToJsonResult(new GetImageUrlsResponse(new string[0]));
             }
             int pageCountPreload = GetDocumentPages(parameters.Path);
             int[] pageNumber = new int[pageCountPreload];
-            for(int i = 0; i < pageNumber.Length; i++)
+            for (int i = 0; i < pageNumber.Length; i++)
             {
                 pageNumber[i] = i;
             }
@@ -242,7 +227,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
                 /*Watermark = Utils.GetWatermark(parameters.WatermarkText, parameters.WatermarkColor,
                 parameters.WatermarkPosition, parameters.WatermarkWidth),*/
                 //Transformations = parameters.Rotate ? Transformation.Rotate : Transformation.None,
-                PageNumbersToConvert = new List<int>() { parameters.PageIndex},
+                PageNumbersToConvert = new List<int>() { parameters.PageIndex },
                 PageNumber = pageNumber,
                 //JpegQuality = parameters.Quality.GetValueOrDefault()
             };
@@ -263,9 +248,39 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
                 imageOptions.Width = parameters.Width.Value;
             }
 
-            var pageImage = annotator.GetPages(guid, imageOptions).Single();
-            pageImage.Stream.Position = 0;
-            return File(pageImage.Stream, String.Format("image/{0}", "png"));
+            string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
+
+            // If no cache - save images to temp folder
+            string tempFolderPath = Path.Combine(HttpContext.Server.MapPath("~"), "Content", "TempStorage");
+
+            PageImage pageImage;
+            string docFoldePath = Path.Combine(tempFolderPath, parameters.Path);
+
+            if (!Directory.Exists(docFoldePath))
+                Directory.CreateDirectory(docFoldePath);
+
+            string pageImageName = string.Format("{0}\\{1}.png", docFoldePath, pageIndex);
+            if (!System.IO.File.Exists(pageImageName))
+            {
+                pageImage = annotator.GetPages(guid, imageOptions).Single();
+                using (FileStream fileStream = new FileStream(pageImageName, FileMode.Create))
+                {
+                    pageImage.Stream.Seek(0, SeekOrigin.Begin);
+                    pageImage.Stream.CopyTo(fileStream);
+                }
+                pageImage.Stream.Position = 0;
+                return File(pageImage.Stream, String.Format("image/{0}", "png"));
+            }
+            Stream stream = new MemoryStream();
+            using (FileStream fsSource = new FileStream(pageImageName,
+                FileMode.Open, FileAccess.Read))
+            {
+                fsSource.Seek(0, SeekOrigin.Begin);
+                fsSource.CopyTo(stream);
+            }
+            stream.Position = 0;
+            return File(stream, "image/png");
+
         }
 
 

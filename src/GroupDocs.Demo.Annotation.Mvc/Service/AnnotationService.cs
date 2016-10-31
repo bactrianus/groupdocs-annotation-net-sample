@@ -704,10 +704,30 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
         private void CleanDocument(string fileId)
         {
             DocumentType docType;
-            docType = DocumentType.Pdf;
-            if (Path.GetExtension(fileId).ToUpper().Equals(".DOCX") || Path.GetExtension(fileId).ToUpper().Equals(".DOC"))
+
+            switch (Path.GetExtension(fileId).ToUpper())
             {
-                docType = DocumentType.Words;
+                case ".DOCX":
+                    docType = DocumentType.Words;
+                    break;
+                case ".DOC":
+                    docType = DocumentType.Words;
+                    break;
+                case ".PPTX":
+                    docType = DocumentType.Slides;
+                    break;
+                case ".PPT":
+                    docType = DocumentType.Slides;
+                    break;
+                case ".XLSX":
+                    docType = DocumentType.Cells;
+                    break;
+                case ".XLS":
+                    docType = DocumentType.Cells;
+                    break;
+                default:
+                    docType = DocumentType.Pdf;
+                    break;
             }
             using (Stream inputDoc = _annotator.GetFile(fileId).Stream)
             {
@@ -781,15 +801,21 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
             var docType = DocumentType.Pdf;
             string extension = "pdf";
             Stream inputDoc;
-            if(format == "words")
+            switch (format)
             {
-                docType = DocumentType.Words;
-                extension = "docx";
-                inputDoc = _annotator.GetFile(fileId).Stream;
-            }
-            else
-            {
-                inputDoc = _annotator.GetPdfFile(fileId).Stream;
+                case "words":
+                    docType = DocumentType.Words;
+                    extension = "docx";
+                    inputDoc = _annotator.GetFile(fileId).Stream;
+                    break;
+                case "slides":
+                    docType = DocumentType.Slides;
+                    extension = "pptx";
+                    inputDoc = _annotator.GetFile(fileId).Stream;
+                    break;
+                default:
+                    inputDoc = _annotator.GetPdfFile(fileId).Stream;
+                    break;
             }
             var resultStream = _annotator.ExportAnnotationsToDocument(documentId, inputDoc, docType, userId);
             inputDoc.Dispose();
@@ -823,10 +849,30 @@ namespace GroupDocs.Demo.Annotation.Mvc.Service
         private void Import(long documentId, string fileId, long userId)
         {
             DocumentType docType;
-            docType = DocumentType.Pdf;
-            if (Path.GetExtension(fileId).ToUpper().Equals(".DOCX") || Path.GetExtension(fileId).ToUpper().Equals(".DOC"))
+            
+            switch (Path.GetExtension(fileId).ToUpper())
             {
-                docType = DocumentType.Words;
+                case ".DOCX":
+                    docType = DocumentType.Words;
+                    break;
+                case ".DOC":
+                    docType = DocumentType.Words;
+                    break;
+                case ".PPTX":
+                    docType = DocumentType.Slides;
+                    break;
+                case ".PPT":
+                    docType = DocumentType.Slides;
+                    break;
+                case ".XLSX":
+                    docType = DocumentType.Cells;
+                    break;
+                case ".XLS":
+                    docType = DocumentType.Cells;
+                    break;
+                default:
+                    docType = DocumentType.Pdf;
+                    break;
             }
             using(Stream inputDoc = _annotator.GetFile(fileId).Stream)
             {

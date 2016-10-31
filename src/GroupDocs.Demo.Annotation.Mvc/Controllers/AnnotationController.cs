@@ -33,7 +33,7 @@ namespace GroupDocs.Demo.Annotation.Mvc.Controllers
             
             //Here you should apply proper GroupDocs.Annotation license (in case you want to
             //use this sample without trial limits)
-            //new License().SetLicense("path_to_proper_lic");
+            //new License().SetLicense("C:/annotation.net/resources/licenses/GroupDocs.Annotation_26_06_2015.lic");
         }
 
         #region Annotation members

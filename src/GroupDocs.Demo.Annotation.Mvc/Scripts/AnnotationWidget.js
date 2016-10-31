@@ -472,7 +472,13 @@
                 '           <li style="display: inline" data-bind="visible: canExport() && $root.docType() == \'words\'">' +
                 '              <a id="btnExportWithoutComments" class="link_with_pointer_cursor" data-bind="click: function() { exportAnnotationsTo(\'words\'); }">' +
                 '                <span class="h_t_d_i_doc"></span>' +
-                '                <p data-localize="WordsWithoutComments">Words with comments</p>' +
+                '                <p data-localize="WordsWithComments">Words with comments</p>' +
+                '              </a>' +
+                '            </li>' +
+                '           <li style="display: inline" data-bind="visible: canExport() && $root.docType() == \'slides\'">' +
+                '              <a id="btnExportWithoutComments" class="link_with_pointer_cursor" data-bind="click: function() { exportAnnotationsTo(\'slides\'); }">' +
+                '                <span class="h_t_d_i_ppt"></span>' +
+                '                <p data-localize="SlidesWithComments">Slides with comments</p>' +
                 '              </a>' +
                 '            </li>' +
                 '            <li style="display: inline" data-bind="visible: canDownload()">' +
@@ -516,7 +522,7 @@
 
             if ((this.options.enabledTools & AnnotationTools.Text) == AnnotationTools.Text) {
                 html +=
-                    '    <li data-bind="visible: ($root.isTextAnnotationButtonEnabled || !$root.embeddedAnnotation)">' +
+                    '    <li data-bind="visible: ($root.isTextAnnotationButtonEnabled || !$root.embeddedAnnotation) && $root.docType() != \'slides\'">' +
                     '      <button class="tool_field text_box_annotate" data-bind="css: {\'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.Text }, click: setTextAnnotationMode">' +
                     '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="TextAnnotation" >Text annotation</div>' +
                     '      </button>' +
@@ -543,7 +549,7 @@
 
             if ((this.options.enabledTools & AnnotationTools.TextStrikeout) == AnnotationTools.TextStrikeout) {
                 html +=
-                    '    <li data-bind="visible: ($root.isStrikeoutAnnotationButtonEnabled || !$root.embeddedAnnotation)">' +
+                    '    <li data-bind="visible: (($root.isStrikeoutAnnotationButtonEnabled || !$root.embeddedAnnotation) && $root.docType() != \'slides\')">' +
                     '      <button class="tool_field strike_box" data-bind="css: {\'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.TextStrikeout }, click: setStrikeoutTextMode">' +
                     '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="StrikeoutText">Strikeout text</div>' +
                     '      </button>' +
@@ -579,7 +585,7 @@
 
             if ((this.options.enabledTools & AnnotationTools.TextReplacement) == AnnotationTools.TextReplacement) {
                 html +=
-                '    <li data-bind="visible: ($root.isTextReplacementAnnotationButtonEnabled) &&  $root.docType() == \'words\'">' +
+                '    <li data-bind="visible: ($root.isTextReplacementAnnotationButtonEnabled) && $root.docType() == \'words\' ">' +
                 '      <button class="tool_field replace_box" data-bind="css: {\'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.TextReplacement }, click: setReplacementAnnotationMode">' +
                 '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="TextReplacementTool">Text replacement tool</div>' +
                 '      </button>' +
@@ -597,7 +603,7 @@
 
             if ((this.options.enabledTools & AnnotationTools.TextRedaction) == AnnotationTools.TextRedaction) {
                 html +=
-                '    <li data-bind="visible: canRedact()">' +
+                '    <li data-bind="visible: canRedact() && $root.docType() != \'slides\'">' +
                 '      <button class="tool_field redtext_box" data-bind="css: {\'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.TextRedaction }, click: setTextRedactionAnnotationMode">' +
                 '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="TextRedactionTool">Text redaction tool</div>' +
                 '      </button>' +
@@ -615,7 +621,7 @@
 
             if ((this.options.enabledTools & AnnotationTools.TextUnderline) == AnnotationTools.TextUnderline) {
                 html +=
-                '    <li>' +
+                '    <li data-bind="visible: $root.docType() != \'slides\'">' +
                 '      <button class="tool_field underline_tool" data-bind="css: {\'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.TextUnderline }, click: setTextUnderlineAnnotationMode">' +
                 '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="UnderlineTextTool">Underline text tool</div>' +
                 '      </button>' +
@@ -625,7 +631,7 @@
             if ((this.options.enabledTools & AnnotationTools.Distance) == AnnotationTools.Distance) {
                 html +=
                 '    <li>' +
-                '      <button class="tool_field ruler_tool" data-bind="css: { \'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.Distance }, visible: $root.docType() != \'words\', click: setDistanceAnnotationMode">' +
+                '      <button class="tool_field ruler_tool" data-bind="css: { \'active\': $data.annotationModeObservable() == Annotation.prototype.AnnotationType.Distance }, visible: $root.docType() == \'pdf\', click: setDistanceAnnotationMode">' +
                 '        <div class="popupdiv-hover tool_field_tooltip small_button" data-localize="DistanceTool">Distance tool</div>' +
                 '      </button>' +
                 '    </li>';
